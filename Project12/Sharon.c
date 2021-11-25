@@ -3,22 +3,31 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-void PrintSubmissions();
-void PrintCandidate(char line[]);
-void PrintJob(char line[]);
-char* SearchJob(char line[], char* _jobName);
-char* SearchCandidate(char* _ID);
-//void FilterCandidates();
+#define CANDIDATES_FILE "C:\\Docs\\CandidatesData.csv"
+#define EMPLOYERS_FILE "C:\\Docs\\EmployersData.csv"
+#define JOBS_FILE "C:\\Docs\\JobsData.csv"
+#define JOBS_AND_CANDIDATES_FILE "C:\\Docs\\JobsAndCandidatesData.csv"
 
 enum CandidateColumns { C_No, C_ID, C_Password, C_FirstName, C_LastName, C_City, C_Birth, C_Phone, C_Email } CandidateColumns;
 enum EmployersColumns { E_No, E_ID, E_Password, E_Name, E_City, E_Phone, E_Email } EmployersColumns;
 enum JobsColumns { J_No, J_Name, J_Category, J_Hours, J_TimePosition, J_Salary, J_City, J_Description, J_EmployerID } JobsColumns;
 enum JobsAndCandidatesColumns { JC_JobNo, JC_CandidateID } JobsAndCandidatesColumns;
 
-//
+void PrintSubmissions();
+void PrintCandidate(char line[]);
+void PrintJob(char line[]);
+char* SearchJob(char line[], char* _jobName);
+char* SearchCandidate(char* _ID);
+void FilterCandidates();
+int IsJobExist(char jobName[]);
+int IsCandidateExist(char candidateID[]);
+void UpdateFile(char* FName, char* NewValue, int row, int col);
+
+
 //int main()
 //{
 //	PrintSubmissions();
+//	FilterCandidates();
 //
 //	return 0;
 //}
@@ -32,9 +41,9 @@ void PrintSubmissions()
 
 	//checkjobIDValidation(jobName) //TODO
 
-	FILE* jobsFile = fopen("C:\\Docs\\JobsData.csv", "r");
-	FILE* jobsAndCandidatesFile = fopen("C:\\Docs\\JobsAndCandidatesData.csv", "r");
-	FILE* candidatesFile = fopen("C:\\Docs\\CandidatesData.csv", "r");
+	FILE* jobsFile = fopen(JOBS_FILE, "r");
+	FILE* jobsAndCandidatesFile = fopen(JOBS_AND_CANDIDATES_FILE, "r");
+	FILE* candidatesFile = fopen(CANDIDATES_FILE, "r");
 
 	if (jobsFile == NULL)
 	{
@@ -85,7 +94,7 @@ void PrintSubmissions()
 					if (first)
 					{
 						char* value = strtok(line2, ",");
-						if (strcmp(value, job_arr[0]) == 0)
+						if (strcmp(value, job_arr[J_Name]) == 0)
 						{
 							char* candidate = SearchCandidate(strtok(strtok(NULL, ","), "\n"));
 							if (candidate)
@@ -94,11 +103,7 @@ void PrintSubmissions()
 								flag2 = 1;
 							}
 						}
-
-
 					}
-
-
 					first = 1;
 				}
 				if (flag2 == 0)
@@ -177,7 +182,7 @@ char* SearchJob(char line[], char* _jobName)
 	char tmp[1024];
 	strcpy(tmp, line);
 	char* arr[9];
-	char* value = strtok(line, ",");
+	char* value = strtok(tmp, ",");
 	for (int i = 0; i < 9; i++)
 	{
 		if (value)
@@ -189,24 +194,23 @@ char* SearchJob(char line[], char* _jobName)
 	}
 
 	if (strcmp(arr[J_Name], _jobName) == 0) // arr[1] = column 'Name'
-	{
-		char* job = (char*)malloc((strlen(line) + 1) * sizeof(char));
-		if (job != NULL)
-			strcpy(job, line);
-		return tmp;
-	}
+		return line;
 
 	return NULL;
 }
 
 char* SearchCandidate(char* _ID)
 {
-	FILE* file = fopen("C:\\Docs\\CandidatesData.csv", "r");
+	FILE* file = fopen(CANDIDATES_FILE, "r");
+	if (file == NULL)
+	{
+		printf("Error!");
+		exit(1);
+	}
+
 	char line[1024];
 	int first = 0;
 	char tmp[1024];
-
-
 
 	while (fgets(line, 1024, file))
 	{
@@ -222,28 +226,138 @@ char* SearchCandidate(char* _ID)
 
 		first = 1;
 	}
-
 	return NULL;
 }
 
 
-//void FilterCandidates()
-//{
-//	char jobName[50];
-//	printf("Enter job name: ");
-//	gets(jobName);
-//
-//	char candidateID[50];
-//	printf("Enter candidate ID to remove: ");
-//	gets(candidateID);
-//
-//	//checkCandidateIDValidation(candidateID) //TODO
-//
-//	char* candidate = SearchCandidate(candidateID);
-//	if (candidate)
-//	{
-//
-//	}
-//	else
-//		printf("\nError! Candidate doesn't exist\n");
-//}
+void FilterCandidates()
+{
+	char jobName[50];
+	printf("Enter job name: ");
+	gets(jobName);
+
+	if (!IsJobExist(jobName)) // job dosen't exist 
+	{
+		printf("\nError! Job dosen't exist\n");
+		return;
+	}
+
+	char candidateID[50];
+	printf("Enter candidate ID to remove: ");
+	gets(candidateID);
+
+	//checkCandidateIDValidation(candidateID) //TODO
+
+	if (!IsCandidateExist(candidateID)) // job dosen't exist 
+	{
+		printf("\nError! Candidate dosen't exist\n");
+		return;
+	}
+
+	FILE* file = fopen(JOBS_AND_CANDIDATES_FILE, "r");
+	if (file == NULL)
+	{
+		printf("Error!");
+		exit(1);
+	}
+
+	char line[1024];
+	int first = 0;
+	int row = 0;
+
+	while (fgets(line, 1024, file))
+	{
+		if (first) // first line is columns headers
+		{
+			char* _jobName = strtok(line, ",");
+			char* _candidateID = strtok(NULL, "\n");
+
+			if ((strcmp(_jobName, jobName) == 0) && (strcmp(_candidateID, candidateID) == 0))
+			{
+				//UpdateFile(JOBS_AND_CANDIDATES_FILE, "null, ", row, 0);
+				//UpdateFile(JOBS_AND_CANDIDATES_FILE, "null, ", row, 1);
+				return;
+			}
+
+		}
+		first = 1;
+		row++;
+	}
+
+	fclose(file);
+}
+
+int IsJobExist(char jobName[])
+{
+	FILE* file = fopen(JOBS_FILE, "r");
+	char line[1024];
+	int first = 0;
+
+	while (fgets(line, 1024, file))
+	{
+		if (first) // first line is columns headers
+		{
+			char* job = SearchJob(line, jobName);
+
+			if (job) // job exist 
+				return 1;
+		}
+		first = 1;
+	}
+
+	fclose(file);
+	return 0;
+}
+
+int IsCandidateExist(char candidateID[])
+{
+	FILE* file = fopen(CANDIDATES_FILE, "r");
+	char line[1024];
+	int first = 0;
+
+	while (fgets(line, 1024, file))
+	{
+		if (first) // first line is columns headers
+		{
+			//char* value = strtok(line, ",");
+			char* candidate = SearchCandidate(candidateID);
+
+			if (candidate) // candidate exist 
+				return 1;
+		}
+		first = 1;
+	}
+
+	fclose(file);
+	return 0;
+}
+
+void UpdateFile(char* FName, char* NewValue, int row, int col)
+{
+	int i, r = 1, c;
+	char line[1024];
+	FILE* file = fopen(FName, "r+");
+	if (file == NULL)
+	{
+		printf("Error!");
+		exit(1);
+	}
+
+	while (fgets(line, 1024, file))
+	{
+		char* tmp = _strdup(line);
+		for (i = 0, c = 1; i < strlen(tmp); i++)
+		{
+			if (!fseek(file, 1, SEEK_CUR))
+				printf("\nError!\n");
+			if (tmp[i] == ",")
+				c++;
+			if (r == row && c == col)
+				fprintf(file, "%s", NewValue);
+		}
+		free(tmp);
+		r++;
+	}
+
+	fclose(file);
+}
