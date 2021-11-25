@@ -144,7 +144,6 @@ void PrintCandidate(char line[])
 
 	for (int i = 0; i < 9; i++)
 		free(arr[i]);
-	free(arr);
 }
 
 void PrintJob(char line[])
@@ -171,7 +170,6 @@ void PrintJob(char line[])
 
 	for (int i = 0; i < 9; i++)
 		free(arr[i]);
-	free(arr);
 }
 
 char* SearchJob(char line[], char* _jobName)
