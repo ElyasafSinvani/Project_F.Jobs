@@ -33,11 +33,26 @@ typedef struct employer
 	char* phone;
 	int password;
 }employer;
+typedef struct User
+{
+	char type[15];
+	char* ID;
+}User;
+worker set_new_worker();
+employer set_new_employer();
+void Create_account();
+int Login(User* U);
+void upload_file(char* FName, char* NewValue, int row, int col);
+void Editing_details(User U);
+void _ERR(char a);
+
 int main()
 {
 	int x;
-	x = Login();
-	printf("%d", x);
+	User s;
+	Create_account();
+	x = Login(&s);
+	printf("%s,%s\n",s.ID,s.type);
 	return 0;
 
 }
@@ -169,7 +184,7 @@ void Create_account()
 		break;
 	}
 }
-int Login()
+int Login(User* U)
 {
 	FILE* wor, * emp;
 	char tid[10];
@@ -204,12 +219,15 @@ int Login()
 				{
 					if (strcmp(password, tpassword) == 0)
 					{
-						printf("You've logged in successfully!");
+						printf("You've logged in successfully!\n");
+						U->ID = (char*)malloc(strlen(tid) + 1);
+						strcpy(U->ID, tid);
+						strcpy(U->type, "Employer");
 						return 1;
 					}
 					else
 					{
-						printf("Username or password incorrect");
+						printf("Username or password incorrect\n");
 						return 0;
 					}
 				}
@@ -228,12 +246,15 @@ int Login()
 				{
 					if (strcmp(password,tpassword)==0)
 					{
-						printf("You've logged in successfully!");
+						printf("You've logged in successfully!\n");
+						U->ID= (char*)malloc(strlen(tid) + 1);
+						strcpy(U->ID, tid);
+						strcpy(U->type, "Worker");
 						return 1;
 					}
 					else
 					{
-						printf("Username or password incorrect");
+						printf("Username or password incorrect\n");
 						return 0;
 					}
 				}
@@ -244,4 +265,168 @@ int Login()
 	default:
 		break;
 	}
+}
+void upload_file(char* FName, char* NewValue, int row, int col) {
+	int i, r = 1, c, first = 0;
+	char line[1024];
+	FILE* f;
+	char* tmp;
+	if (!(f = fopen(FName, "r+"))) _ERR("f");
+
+	while (fgets(line, 1024, f))
+	{
+		if (first)
+		{
+			if (!(tmp = _strdup(line))) _ERR("m");
+			for (i = 0, c = 1; i < strlen(tmp); i++) {
+				if (!(fseek(f, 1, SEEK_CUR))) _ERR("k");
+				if (tmp[i] == ",") 
+					c++;
+				if (r == row && c == col) {
+					fprintf(f, "%s", NewValue);
+				}
+			}
+			free(tmp);
+			r++;
+		}
+		first = 1;
+	}
+	fclose(f);
+}
+void _ERR(char a) 
+{
+	if (a == "f") {
+		printf("\n\tError File !!\n\n");
+	}
+	else if (a == "m") {
+		printf("\n\tError Memory !!\n\n");
+	}
+	else {
+		printf("\n\tError !!\n\n");
+	}
+	exit(1);
+}
+void Editing_details(User U)
+{
+	char line[1024];
+	int first = 0;
+	int row = 0;
+	int c;
+	char newVal[20];
+	FILE* emp = fopen(FILENAME2, "r");
+	FILE* wor = fopen(FILENAME, "r");
+	if (strcmp(U.type, "Employer")==0)
+	{
+		printf("1 - Change phone number\n2 - Change address\n");
+		scanf_s("%d", &c);
+
+		switch (c)
+		{
+		case 1:
+			printf("Please put your new phone number:\n");
+			gets(newVal);
+			gets(newVal);
+			while (fgets(line, 1024, emp))
+			{
+				if (first)
+				{
+					char* id = strtok(line, ",");
+					if (strcmp(U.ID, id) == 0)
+						upload_file(FILENAME2, newVal, row, 4);
+
+				}
+				first = 1;
+				row++;
+			}
+			break;
+
+		case 2:
+			printf("Please put your new address:\n");
+			gets(newVal);
+			gets(newVal);
+			while (fgets(line, 1024, emp))
+			{
+				if (first)
+				{
+					char* id = strtok(line, ",");
+					if (strcmp(U.ID, id) == 0)
+						upload_file(FILENAME2, newVal, row, 3);
+
+				}
+				first = 1;
+				row++;
+			}
+			break;
+
+		default:
+			break;
+		}
+
+	}
+	else
+	{
+		printf("1 - Change phone number\n2 - Change address\n3 - Change email");
+		scanf_s("%d", &c);
+
+		switch (c)
+		{
+		case 1:
+			printf("Please put your new phone number:\n");
+			gets(newVal);
+			gets(newVal);
+			while (fgets(line, 1024, emp))
+			{
+				if (first)
+				{
+					char* id = strtok(line, ",");
+					if (strcmp(U.ID, id) == 0)
+						upload_file(FILENAME2, newVal, row, 5);
+
+				}
+				first = 1;
+				row++;
+			}
+			break;
+
+		case 2:
+			printf("Please put your new address:\n");
+			gets(newVal);
+			gets(newVal);
+			while (fgets(line, 1024, emp))
+			{
+				if (first)
+				{
+					char* id = strtok(line, ",");
+					if (strcmp(U.ID, id) == 0)
+						upload_file(FILENAME2, newVal, row, 4);
+
+				}
+				first = 1;
+				row++;
+			}
+			break;
+
+		case 3:
+			printf("Please put your new email:\n");
+			gets(newVal);
+			gets(newVal);
+			while (fgets(line, 1024, emp))
+			{
+				if (first)
+				{
+					char* id = strtok(line, ",");
+					if (strcmp(U.ID, id) == 0)
+						upload_file(FILENAME2, newVal, row, 7);
+
+				}
+				first = 1;
+				row++;
+			}
+			break;
+
+		default:
+			break;
+		}
+	}
+
 }

@@ -139,7 +139,19 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Eden.c" />
     <ClCompile Include="Main1.c" />
+    <ClCompile Include="Sharon.c" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="CandidatesData.csv" />
+    <None Include="EmployersData.csv" />
+    <None Include="Main1" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="database.txt" />
+    <Text Include="NEWdatabase.txt" />
+    <Text Include="‏‏תיקיה חדשהdatabase.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

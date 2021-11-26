@@ -18,5 +18,21 @@
     <ClCompile Include="Main1.c">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Eden.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Sharon.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="CandidatesData.csv" />
+    <None Include="EmployersData.csv" />
+    <None Include="Main1" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="database.txt" />
+    <Text Include="‏‏תיקיה חדשהdatabase.txt" />
+    <Text Include="NEWdatabase.txt" />
   </ItemGroup>
 </Project>
