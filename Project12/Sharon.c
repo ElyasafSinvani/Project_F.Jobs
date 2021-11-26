@@ -21,8 +21,6 @@ char* SearchCandidate(char* _ID);
 void FilterCandidates();
 int IsJobExist(char jobName[]);
 int IsCandidateExist(char candidateID[]);
-void UpdateFile(char* FName, char* NewValue, int row, int col);
-
 
 //int main()
 //{
@@ -274,8 +272,8 @@ void FilterCandidates()
 
 			if ((strcmp(_jobName, jobName) == 0) && (strcmp(_candidateID, candidateID) == 0))
 			{
-				//UpdateFile(JOBS_AND_CANDIDATES_FILE, "null, ", row, 0);
-				//UpdateFile(JOBS_AND_CANDIDATES_FILE, "null, ", row, 1);
+				//upload_file(JOBS_AND_CANDIDATES_FILE, "null, ", row, 0);
+				//upload_file(JOBS_AND_CANDIDATES_FILE, "null, ", row, 1);
 				return;
 			}
 
@@ -330,34 +328,4 @@ int IsCandidateExist(char candidateID[])
 
 	fclose(file);
 	return 0;
-}
-
-void UpdateFile(char* FName, char* NewValue, int row, int col)
-{
-	int i, r = 1, c;
-	char line[1024];
-	FILE* file = fopen(FName, "r+");
-	if (file == NULL)
-	{
-		printf("Error!");
-		exit(1);
-	}
-
-	while (fgets(line, 1024, file))
-	{
-		char* tmp = _strdup(line);
-		for (i = 0, c = 1; i < strlen(tmp); i++)
-		{
-			if (!fseek(file, 1, SEEK_CUR))
-				printf("\nError!\n");
-			if (tmp[i] == ",")
-				c++;
-			if (r == row && c == col)
-				fprintf(file, "%s", NewValue);
-		}
-		free(tmp);
-		r++;
-	}
-
-	fclose(file);
 }
