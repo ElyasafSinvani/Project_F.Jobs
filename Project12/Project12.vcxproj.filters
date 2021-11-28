@@ -18,17 +18,13 @@
     <ClCompile Include="Main1.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Eden.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Sharon.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="CandidatesData.csv" />
-    <None Include="EmployersData.csv" />
     <None Include="Main1" />
+    <None Include="Data Files\CandidatesData.csv" />
+    <None Include="Data Files\EmployersData.csv" />
+    <None Include="Data Files\JobsAndCandidatesData.csv" />
+    <None Include="Data Files\JobsData.csv" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="database.txt" />

@@ -139,13 +139,13 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Eden.c" />
     <ClCompile Include="Main1.c" />
-    <ClCompile Include="Sharon.c" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="CandidatesData.csv" />
-    <None Include="EmployersData.csv" />
+    <None Include="Data Files\CandidatesData.csv" />
+    <None Include="Data Files\EmployersData.csv" />
+    <None Include="Data Files\JobsAndCandidatesData.csv" />
+    <None Include="Data Files\JobsData.csv" />
     <None Include="Main1" />
   </ItemGroup>
   <ItemGroup>
